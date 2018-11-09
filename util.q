@@ -1,3 +1,9 @@
+/
+ Some Basic Method
+ @author Jiahao
+ @date 2018.11.09
+\
+
 //[ doc ] calculate the return Money
 moneyCal:{
     res:select {-[;] . x} each (0N 2)#price,(0N 2)#oc,(0N 2)#d,pprice:(0N 2)#price from record;
@@ -14,31 +20,28 @@ moneyCal:{
     res:delete feeclose1,feeopen1,FeeMode,TradeUnit,feeopen,feeclose from res
     }
 
-//[ doc ] Compare the Send Price and Trade Price difference
+// [ doc ] Compare the Send Price and Trade Price difference
 compare:{
    `date`symbol`sendTime`time`sendPrice`price`sendSize`size`oc`d xcols delete OrderID from 
     record lj `symbol`OrderID xkey select sendTime:time,sendPrice:price ,sendSize:size,OrderID,symbol from sendRecord
     }
 
-
+// Get max drop down for a list;
 getMaxDropDown:{min x-maxs x};
 
+// Get Max drop down Ratio for a list;
 getMaxDropDownRatio:{s:min x-maxs x;b:max x til first (&)s=mins x-maxs x;s%b};
 
-
-//get Main Contract x:date;y:product
+// get Main Contract x:date;y:product ...The simplest Get Main Contract Method.(Maybe fault sometimes)
 getMain:{ p:raze (string y),"*";.qtools.denum exec first Symbol  from `c xdesc select c:count i by Symbol from CtpDepth where date = x,Category=0,Symbol like p};
 
-//if rb888 Means rb maintract.
-symfunc:{
-    $[(xx:string x) like "*888";
-        getMain[y;`$ssr[xx;"888";""]];
-        x]
-    }
+// if rb888 Means rb maintract.
+symfunc:{$[(xx:string x) like "*888";getMain[y;`$ssr[xx;"888";""]];x]}
 
+// map contract Name to product Name
 sym2product:{x:string x;`$lower rtrim @[x;(x ss "[0-9]");:;" "]} 
 
-
+// qtools Function Used to cast enumate to symbol;
 .qtools.cols:{[tbl;typ]schema:meta tbl;$[11h=(abs type typ);exec c from schema where a in typ;exec c from schema where t in typ]};
 .qtools.enumrange:20 76h;
 .qtools.denum:{$[(abs type x) within .qtools.enumrange;value x;0h=type x;.qtools.denum each x;x]};
@@ -85,6 +88,5 @@ ip:{
 / @param iTime int
 / @param tday date
 dateTime2TimeStamp:{[iTime;tday] "j"$(1000*("j"$(.util.int2time[iTime]-`time$ 08:00:00.000))) + ("j"$(0.001*((`timestamp$tday)-(`timestamp$ 1970.01.01))))}
-
 
 \d .

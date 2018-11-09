@@ -1,8 +1,7 @@
-\l order.q
-\l util.q
-\l log.q
-\l kline.q
 \l config.q
+LoadQModule `order.q`util.q`log.q`kline.q;
+
+
 \c 4000 4000
 //.log.lvl:1;
 
@@ -85,7 +84,7 @@ theFirstInit:{
     }[];
 
 // MainContract
-// runSymbol[;`AP888] each (2018.06.11;2018.06.12)
+// runSymbol[;`AP810] each (2018.06.11;2018.06.12)
 
 runSymbol[;`rb888] each (2018.06.11;2018.06.12)
 

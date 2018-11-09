@@ -1,3 +1,4 @@
+//Getting From Q-Tips Code
 \d .log
 
 h:-2              / handle to print log

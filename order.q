@@ -6,6 +6,8 @@
 
 \l log.q
 \l fee.q
+
+
 \c 5000 5000
 op:()!();
 appendKey:{$[not x in key op;@[`op;x;:;enlist y];@[`op;x;,;y]];` _ op;}
