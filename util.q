@@ -1,9 +1,17 @@
 //[ doc ] calculate the return Money
 moneyCal:{
-    res:select {-[;] . x} each (0N 2)#price,(0N 2)#oc,(0N 2)#d from record;
+    res:select {-[;] . x} each (0N 2)#price,(0N 2)#oc,(0N 2)#d,pprice:(0N 2)#price from record;
     res:delete from res where (count each d) <2;
     res:update price: neg price from res where (last each d) = `buy;
-    update caculateMoney:sums price from res
+    res:update symbol:(first record`symbol),size:(first record`size) from res;
+    res:update PriceSums:sums price,Product:sym2product each symbol from res;
+    res: res lj `Product xkey fee;
+    res:update feeopen1:?[FeeMode=`ByVol;size*feeopen;size*(first flip pprice)*TradeUnit*feeopen] from res;
+    res:update feeclose1:?[FeeMode=`ByVol;size*feeclose;size*(last flip pprice)*TradeUnit*feeclose] from res;
+    res:update fee:feeopen1+feeclose1 from res;
+    res:update MoneyWithoutFee:PriceSums*TradeUnit from res;
+    res:update MoneySums:sums (price*TradeUnit)-fee,feeSums:sums fee from res; 
+    res:delete feeclose1,feeopen1,FeeMode,TradeUnit,feeopen,feeclose from res
     }
 
 //[ doc ] Compare the Send Price and Trade Price difference
@@ -11,6 +19,12 @@ compare:{
    `date`symbol`sendTime`time`sendPrice`price`sendSize`size`oc`d xcols delete OrderID from 
     record lj `symbol`OrderID xkey select sendTime:time,sendPrice:price ,sendSize:size,OrderID,symbol from sendRecord
     }
+
+
+getMaxDropDown:{min x-maxs x};
+
+getMaxDropDownRatio:{s:min x-maxs x;b:max x til first (&)s=mins x-maxs x;s%b};
+
 
 //get Main Contract x:date;y:product
 getMain:{ p:raze (string y),"*";.qtools.denum exec first Symbol  from `c xdesc select c:count i by Symbol from CtpDepth where date = x,Category=0,Symbol like p};
@@ -21,6 +35,9 @@ symfunc:{
         getMain[y;`$ssr[xx;"888";""]];
         x]
     }
+
+sym2product:{x:string x;`$lower rtrim @[x;(x ss "[0-9]");:;" "]} 
+
 
 .qtools.cols:{[tbl;typ]schema:meta tbl;$[11h=(abs type typ);exec c from schema where a in typ;exec c from schema where t in typ]};
 .qtools.enumrange:20 76h;

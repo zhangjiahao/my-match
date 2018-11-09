@@ -81,14 +81,25 @@ runSymbol:{[d;s]runNightSymbol[d;s];runDaySymbol[d;s];}
 theFirstInit:{
     T::5;
     `position insert (`rb1810;0;0;0Nf);
+    //`position insert (`AP810;0;0;0Nf);
     }[];
 
-//MainContract
-//runSymbol[;`rb888] each (2018.06.11;2018.06.12)
+// MainContract
+// runSymbol[;`AP888] each (2018.06.11;2018.06.12)
 
-runSymbol[;`rb1810] each (2018.06.11;2018.06.12)
+runSymbol[;`rb888] each (2018.06.11;2018.06.12)
 
-/ Some Test Case
+.log.inf "Analysis Trade Record and get the performance";
+-1 .Q.s moneyCal[];
+.log.inf "Comparing Send Record and Trade Record";
+-1 .Q.s compare[];
+.log.inf "Get MaxDropDown and Max DropDownRatio";
+.log.inf "MaxDropDown:",string getMaxDropDown moneyCal[]`MoneySums  ;
+.log.inf "MaxDropDownRatio:",string getMaxDropDownRatio moneyCal[]`MoneySums;
+
+
+
+/ Some Other Test Case
 //runDay:runDaySymbol[;`rb1810];
 //runNight:runNightSymbol[;`rb1810];
 // runDay each enlist 2018.06.12
